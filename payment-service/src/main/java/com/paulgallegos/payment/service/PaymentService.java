@@ -37,9 +37,10 @@ public class PaymentService {
                         .currency(paymentRequest.getCurrency())
                         .status(PaymentStatus.PENDING)
                         .description(paymentRequest.getDescription())
+                        .idempotencyKey(paymentRequest.getIdempotencyKey())
                         .build();
 
-         Payment paymentSaved =  paymentRepository.save(payment);
+         Payment paymentSaved =  paymentRepository.saveAndFlush(payment);
 
          return PaymentResponse.builder()
                  .id(paymentSaved.getId())
