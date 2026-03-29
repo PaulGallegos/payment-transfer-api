@@ -6,6 +6,8 @@ import com.paulgallegos.payment.dto.CreatePaymentRequest;
 import com.paulgallegos.payment.dto.PaymentResponse;
 import com.paulgallegos.payment.exception.DuplicatePaymentException;
 import com.paulgallegos.payment.exception.PaymentNotFoundException;
+import com.paulgallegos.payment.kafka.PaymentEvent;
+import com.paulgallegos.payment.kafka.PaymentEventProducer;
 import com.paulgallegos.payment.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,6 +24,7 @@ import java.util.UUID;
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
+    private final PaymentEventProducer paymentEventProducer;
 
     @Transactional
     public PaymentResponse createPayment(UUID senderAccountId, CreatePaymentRequest paymentRequest) {
@@ -44,6 +48,16 @@ public class PaymentService {
                         .build();
 
          Payment paymentSaved =  paymentRepository.saveAndFlush(payment);
+
+         paymentEventProducer.publishPaymentInitiated(PaymentEvent.builder()
+                         .paymentId(paymentSaved.getId())
+                         .senderAccountId(paymentSaved.getSenderAccountId())
+                         .receiverAccountId(paymentSaved.getReceiverAccountId())
+                         .currency(paymentSaved.getCurrency())
+                         .amount(paymentSaved.getAmount())
+                         .status(paymentSaved.getStatus())
+                         .occuredAt(LocalDateTime.now())
+                 .build());
 
          return toResponse(paymentSaved);
     }
