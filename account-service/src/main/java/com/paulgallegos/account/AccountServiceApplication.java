@@ -1,4 +1,4 @@
-package com.paulgallegos.account_service;
+package com.paulgallegos.account;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
