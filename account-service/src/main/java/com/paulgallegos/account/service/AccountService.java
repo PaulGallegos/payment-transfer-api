@@ -18,6 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class AccountService {
+
     private final AccountRepository accountRepository;
 
     @Transactional

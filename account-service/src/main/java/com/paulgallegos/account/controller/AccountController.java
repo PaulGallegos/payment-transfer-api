@@ -5,7 +5,6 @@ import com.paulgallegos.account.dto.AccountResponse;
 import com.paulgallegos.account.dto.CreateAccountRequest;
 import com.paulgallegos.account.service.AccountService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;

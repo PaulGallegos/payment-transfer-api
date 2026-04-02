@@ -21,9 +21,11 @@ public class PaymentEventConsumer {
     @KafkaListener(topics = "${kafka.topics.payment-initiated}", groupId = "account-service-group")
     public void handlePaymentInitiated(PaymentEvent event) {
         log.info("Received payment event: {}", event.getPaymentId());
+        log.info("Sender account ID from event: {}", event.getSenderAccountId());
 
         accountRepository.findByUserId(event.getSenderAccountId()).ifPresent(
                 account -> {
+                    log.info("Found account: {}", account.getAccountNumber());
                     account.setBalance(account.getBalance().subtract(event.getAmount()));
                     accountRepository.save(account);
                     log.info("Balance updated for account: {}", account.getAccountNumber());
