@@ -13,6 +13,36 @@ A production-ready payment and transfer microservices system built with Spring B
 - **JUnit 5 & Mockito** — unit testing
 - **GitHub Actions** — CI/CD pipeline
 
+## Architecture Diagram
+```mermaid
+graph TD
+    Client([Client])
+
+    subgraph Services
+        GW[API Gatewayport 8080]
+        PS[Payment Serviceport 8082]
+        AS[Account Serviceport 8081]
+        NS[Notification Serviceport 8083]
+    end
+
+    subgraph Infrastructure
+        K[Apache Kafka]
+        PDB[(PostgreSQLpayments_db)]
+        ADB[(PostgreSQLaccounts_db)]
+    end
+
+    Client -->|JWT| GW
+    GW -->|X-User-Id| PS
+    GW -->|X-User-Id| AS
+    PS -->|payment.initiated| K
+    PS -->|payment.completed| K
+    K -->|payment.initiated| AS
+    K -->|payment.initiated| NS
+    K -->|payment.completed| NS
+    PS --- PDB
+    AS --- ADB
+```
+
 ## Architecture
 
 This system follows a microservices architecture with three independent services:
