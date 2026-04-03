@@ -1,4 +1,4 @@
-package com.paulgallegos.account.kafka;
+package com.paulgallegos.notification.kafka;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
