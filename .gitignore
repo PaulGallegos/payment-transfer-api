@@ -1,0 +1,60 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+*.xml
+out/
+
+# Compilación / build
+target/
+build/
+dist/
+
+# Logs
+*.log
+logs/
+
+# Java
+*.class
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+
+# Spring / configuración local
+application-local.properties
+application-local.yml
+application-dev.properties
+application-dev.yml
+application-test.properties
+application-test.yml
+
+# Variables de entorno
+.env
+.env.*
+*.env
+
+# Docker
+docker-data/
+postgres_data/
+redis_data/
+kafka_data/
+zookeeper_data/
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Cache y temporales
+tmp/
+temp/
+*.tmp
+
+# Cobertura y reportes
+jacoco/
+*.exec
+coverage/
