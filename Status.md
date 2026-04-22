@@ -6,6 +6,13 @@
 - **CI/CD:** GitHub Actions — 3 jobs en verde
 - **Repo:** https://github.com/PaulGallegos/payment-transfer-api
 
+## Developer Profile
+- **Current level:** Mid Developer
+- **Goal:** Senior Developer position in Japan (Tokyo)
+- **Target timeline:** ~7 meses
+- **Stack:** Java, Spring Boot 3.2.3, Kafka, PostgreSQL, Redis, Docker, GitHub Actions
+- **Target companies:** Mercari/Merpay, Rakuten, PayPay, SmartHR, freee
+
 ## Plan de 9 meses — progreso general
 - **Total completado:** ~27%
 - **Tiempo invertido:** Fase 1 (~120 hrs estimadas)
@@ -74,7 +81,7 @@
 - [x] "Why Kafka over REST?" — practicado
 - [ ] Grabación en audio para práctica diaria
 
-### auth-service (port 8084) — EN PROGRESO
+### auth-service (port 8084) — EN PROGRESO ⬅️ AQUÍ ME QUEDÉ
 - [x] Entidad `User`
 - [x] JWT generation y validation
 - [ ] Register endpoint
@@ -151,9 +158,15 @@
 - "Why Kafka over REST?" ✅
 - Vocabulario clave: ACID transactions, idempotency, decoupling, resilience, database per service
 
-### Learning Preferences 
-- They prefer to learn by doing, rather than being given complete solutions 
-- Provide step-by-step instructions, one at a time 
-- Wait for the user to complete each step before moving on to the next 
-- If they make a mistake, offer hints, not the direct answer 
-- Always ask, “Where exactly are you in the process?” before offering guidance
+---
+
+## Learning Preferences
+- Prefer to learn by doing, not by receiving complete solutions
+- Provide step-by-step instructions, one at a time
+- Wait for the user to complete each step before moving on to the next
+- If they make a mistake, offer hints — never the direct answer
+- Always ask "What have you tried so far and what specific blocker are you facing?" before offering guidance
+- Always recommend best practices in every explanation or correction
+- Review all code with Senior-level standards: clean code, SOLID principles, design patterns, performance, maintainability, scalability, and security
+- The goal is growth toward Senior Developer — feedback must be thorough, honest, and constructive
+- Always respond in Spanish unless code or technical terms require English
