@@ -81,10 +81,14 @@
 - [x] "Why Kafka over REST?" — practicado
 - [ ] Grabación en audio para práctica diaria
 
-### auth-service (port 8084) — EN PROGRESO ⬅️ AQUÍ ME QUEDÉ
+### auth-service (port 8084) — EN PROGRESO
 - [x] Entidad `User`
 - [x] JWT generation y validation
-- [ ] Register endpoint
+- [x] Register endpoint — POST `/api/v1/auth/register` (201)
+  - DTOs: `RegisterRequest` (@NotBlank, @Valid), `RegisterResponse`
+  - BCrypt para hashear contraseña
+  - UUID generado en PostgreSQL (gen_random_uuid())
+  - Devuelve userId (UUID), token JWT y role
 - [ ] Login endpoint
 - [ ] Refresh token con Redis
 - [ ] Rate limiting por IP
@@ -144,6 +148,9 @@
 - Spring Boot 4.x de Initializr → siempre bajar a 3.2.3 manualmente
 - `maven-compiler-plugin` con Lombok sin versión → eliminar el plugin, Spring Boot lo maneja solo
 - `./mvnw: Permission denied` en CI → `git update-index --chmod=+x service/mvnw`
+- Module SDK 17 vs Java 21 en IntelliJ → File → Project Structure → Modules → cambiar SDK a 21
+- Flyway checksum mismatch al editar V1 → DELETE FROM flyway_schema_history WHERE version = '1' + DROP TABLE
+- Columna con typo en Flyway (udpated_at) → corregir en V1 y limpiar BD en desarrollo
 
 ### Empresas objetivo (orden de prioridad)
 1. Mercari / Merpay — tokyodev.com
