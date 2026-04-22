@@ -1,5 +1,6 @@
 package com.paulgallegos.auth.security;
 
+import com.paulgallegos.auth.entity.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -25,7 +26,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(String email, String role){
+    public String generateToken(String email, Role role){
         return Jwts.builder()
                 .setSubject(email)
                 .claim("role", role)
