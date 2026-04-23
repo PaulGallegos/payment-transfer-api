@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class RegisterResponse {
+public class AuthResponse {
 
     private UUID userId;
     private String token;

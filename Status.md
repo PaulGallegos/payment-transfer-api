@@ -1,7 +1,7 @@
 # Payment Transfer API — Project Status
 
 ## Current state
-- **Latest step completed:** Fase 1 completa — 3 microservicios funcionando con Kafka + CI/CD en GitHub
+- **Latest step completed:** Login endpoint en auth-service ✅
 - **All services running:** yes (payment-service, account-service, notification-service)
 - **CI/CD:** GitHub Actions — 3 jobs en verde
 - **Repo:** https://github.com/PaulGallegos/payment-transfer-api
@@ -18,7 +18,7 @@
 - **Tiempo invertido:** Fase 1 (~120 hrs estimadas)
 - **Tiempo restante:** ~420 hrs (~7 meses a 2 hrs/día)
 
----
+---  
 
 ## Fase 1 — Base técnica y GitHub ✅ COMPLETA
 
@@ -71,7 +71,7 @@
 - [x] Diagrama Mermaid en README renderizado en GitHub
 - [x] CI/CD — 3 jobs independientes en GitHub Actions
 
----
+---  
 
 ## Fase 2 — Profundidad técnica 🔄 EN CURSO (5%)
 
@@ -85,11 +85,16 @@
 - [x] Entidad `User`
 - [x] JWT generation y validation
 - [x] Register endpoint — POST `/api/v1/auth/register` (201)
-  - DTOs: `RegisterRequest` (@NotBlank, @Valid), `RegisterResponse`
+  - DTOs: `RegisterRequest` (@NotBlank, @Valid), `AuthResponse` (renombrado desde RegisterResponse)
   - BCrypt para hashear contraseña
   - UUID generado en PostgreSQL (gen_random_uuid())
   - Devuelve userId (UUID), token JWT y role
-- [ ] Login endpoint
+- [x] Login endpoint — POST `/api/v1/auth/login` (200)
+  - DTOs: `LoginRequest` (email + password), `AuthResponse`
+  - `passwordEncoder.matches()` para comparar password con hash
+  - `InvalidCredentialsException` → 401 para email no encontrado Y password incorrecta
+  - Decisión de seguridad: mismo error para ambos casos (no revelar cuál falló)
+  - Access token configurado a 900,000 ms (15 minutos) — estándar bancario
 - [ ] Refresh token con Redis
 - [ ] Rate limiting por IP
 - [ ] Tests al 90%+
@@ -100,7 +105,7 @@
 - [ ] Mock interviews en inglés (Pramp o ChatGPT)
 - [ ] Podcasts técnicos: Syntax.fm, Software Engineering Daily
 
----
+---  
 
 ## Fase 3 — Preparación y aplicaciones ⬜ NO INICIADA
 
@@ -109,7 +114,7 @@
 - [ ] Aplicar en TokyoDev y Japan Dev (5-8 apps/semana)
 - [ ] Proyecto 3 opcional: fintech japonés o pagos
 
----
+---  
 
 ## Fase 4 — Entrevistas y cierre ⬜ NO INICIADA
 
@@ -119,7 +124,7 @@
 - [ ] Simulacros de entrevista completos 45 min
 - [ ] Certificate of Eligibility (COE) trámite
 
----
+---  
 
 ## Key context for next session
 
@@ -141,6 +146,10 @@
 - `saveAndFlush` en lugar de `save` — para que `createdAt` llegue populado
 - `LEADER_NOT_AVAILABLE` en Kafka al inicio es normal — el topic se crea automáticamente
 - `auto-offset-reset=earliest` — para no perder eventos si un servicio estuvo caído
+- Login devuelve `401` para email no encontrado Y password incorrecta (no diferenciar — seguridad)
+- `passwordEncoder.matches(raw, hash)` para comparar passwords — nunca `.encode()` para comparar
+- `AuthResponse` reutilizado para register y login (renombrado desde `RegisterResponse`)
+- Access token duration: 900,000 ms (15 minutos) — estándar bancario
 
 ### Problemas resueltos
 - IntelliJ no compilaba Lombok → File → Settings → Delegate IDE build/run actions to Maven
@@ -165,7 +174,7 @@
 - "Why Kafka over REST?" ✅
 - Vocabulario clave: ACID transactions, idempotency, decoupling, resilience, database per service
 
----
+---  
 
 ## Learning Preferences
 - Prefer to learn by doing, not by receiving complete solutions

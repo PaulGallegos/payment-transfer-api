@@ -1,7 +1,8 @@
 package com.paulgallegos.auth.controller;
 
+import com.paulgallegos.auth.dto.LoginRequest;
 import com.paulgallegos.auth.dto.RegisterRequest;
-import com.paulgallegos.auth.dto.RegisterResponse;
+import com.paulgallegos.auth.dto.AuthResponse;
 import com.paulgallegos.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +22,16 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public RegisterResponse register(@RequestBody @Valid RegisterRequest registerRequest){
+    public AuthResponse register(@RequestBody @Valid RegisterRequest registerRequest){
 
         return authService.register(registerRequest);
 
+    }
+
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    public AuthResponse login(@RequestBody @Valid LoginRequest loginRequest){
+        return authService.login(loginRequest);
     }
 
 }
