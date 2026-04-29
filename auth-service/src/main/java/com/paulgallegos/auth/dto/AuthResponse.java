@@ -12,6 +12,7 @@ public class AuthResponse {
 
     private UUID userId;
     private String token;
+    private String refreshToken;
     private Role role;
 
 }

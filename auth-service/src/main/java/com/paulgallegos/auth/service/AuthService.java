@@ -1,6 +1,7 @@
 package com.paulgallegos.auth.service;
 
 import com.paulgallegos.auth.dto.LoginRequest;
+import com.paulgallegos.auth.dto.RefreshRequest;
 import com.paulgallegos.auth.dto.RegisterRequest;
 import com.paulgallegos.auth.dto.AuthResponse;
 import com.paulgallegos.auth.entity.User;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenService refreshTokenService;
 
     public AuthResponse register(RegisterRequest registerRequest){
 
@@ -36,33 +39,69 @@ public class AuthService {
 
         var savedUser = userRepository.save(user);
 
-
-        String token = jwtService.generateToken(savedUser.getEmail(), savedUser.getRole());
+        TokenPair tokens = generateTokens(user);
 
         return  AuthResponse.builder()
                 .role(savedUser.getRole())
-                .token(token)
+                .token(tokens.accessToken())
+                .refreshToken(tokens.refreshToken())
                 .userId(savedUser.getId())
                 .build();
     }
 
     public AuthResponse login(LoginRequest loginRequest){
 
-        Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials"));
 
-        if (user.isPresent()){
 
-            if(!passwordEncoder.matches(loginRequest.getPassword(),user.get().getPasswordHash()))
-                throw new InvalidCredentialsException("Invalid credentials");
 
-            return AuthResponse.builder()
-                    .role(user.get().getRole())
-                    .token(jwtService.generateToken(user.get().getEmail(), user.get().getRole()))
-                    .userId(user.get().getId())
-                    .build();
+        if(!passwordEncoder.matches(loginRequest.getPassword(),user.getPasswordHash()))
+            throw new InvalidCredentialsException("Invalid credentials");
+
+        TokenPair tokens = generateTokens(user);
+
+        return AuthResponse.builder()
+                .role(user.getRole())
+                .token(tokens.accessToken())
+                .refreshToken(tokens.refreshToken())
+                .userId(user.getId())
+                .build();
+    }
+
+    public AuthResponse refresh(RefreshRequest refreshRequest) {
+        String userId = refreshRequest.getUserId();
+        String refreshToken = refreshRequest.getRefreshToken();
+
+        if (!refreshTokenService.validate(userId, refreshToken)) {
+            throw new InvalidCredentialsException("Invalid refresh token");
         }
 
-        throw new InvalidCredentialsException("Invalid credentials");
+        User user = userRepository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid refresh token"));
+
+        String newAccessToken = jwtService.generateToken(user.getEmail(), user.getRole());
+
+        return AuthResponse.builder()
+                .userId(user.getId())
+                .token(newAccessToken)
+                .refreshToken(refreshToken)
+                .role(user.getRole())
+                .build();
     }
+
+    public void logout(RefreshRequest refreshRequest) {
+        refreshTokenService.delete(refreshRequest.getUserId());
+    }
+
+    private TokenPair generateTokens(User user) {
+        String userId = user.getId().toString();
+        String accessToken = jwtService.generateToken(user.getEmail(), user.getRole());
+        String refreshToken = jwtService.generateRefreshToken(userId);
+        refreshTokenService.save(userId, refreshToken);
+        return new TokenPair(accessToken, refreshToken);
+    }
+
+    private record TokenPair(String accessToken, String refreshToken) {}
 
 }

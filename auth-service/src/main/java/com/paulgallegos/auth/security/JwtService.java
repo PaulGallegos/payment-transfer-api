@@ -53,6 +53,18 @@ public class JwtService {
         }
     }
 
+    public String generateRefreshToken(String userId){
+
+        long sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+
+        return Jwts.builder()
+                .setSubject(userId)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     private Claims parseClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
